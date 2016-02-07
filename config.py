@@ -1,1 +1,1 @@
-datafile_path = './test.csv'
+datafile_path = './test.json'

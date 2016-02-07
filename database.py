@@ -1,5 +1,6 @@
 import os
 import csv
+import json
 import sqlite3
 
 class Datafile:
@@ -27,19 +28,10 @@ class Datafile:
 #     def __init__(self, path):
 #         super().__init__(path)
 
-#     def fields(self, field):
-#         pass
+#         # if sqlite database does not exist 
+#         # it will be created 
+#         self.db = sqlite3.connect(path)
 
-#     def insert(self, value):
-#         pass
-
-#     def close(self):
-#         pass
-
-# class Json_db(Datafile):
-#     # json databe interface
-#     def __init__(self, path):
-#         super().__init__(path)
 
 #     def fields(self, field):
 #         pass
@@ -49,6 +41,26 @@ class Datafile:
 
 #     def close(self):
 #         pass
+
+class Json_db(Datafile):
+    # json databe interface
+    def __init__(self, path):
+        super().__init__(path)
+
+        # opens for writing and reading if, it does 
+        # not exist then create it and open it
+        self.file = open(path, 'w+')
+        self.json= {"data": []}
+
+    def fields(self, *field):
+        pass
+
+    def insert(self, **value):
+        self.json['data'] += [value]
+
+    def close(self):
+        json.dump(self.json, self.file)
+        self.file.close()
 
 class Csv_db(Datafile):
     # csv database interface
@@ -88,3 +100,8 @@ def database(config):
         return Sqlite_db(path)
     else:
         return False
+
+def container(spring):
+    # inject spring into container retrun object interface
+    # use this class fields type defined database fields
+    pass
