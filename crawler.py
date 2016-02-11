@@ -1,24 +1,29 @@
+import requests
+from bs4 import BeautifulSoup
 from database import database
 
-class Weather_crawler:
+class roadSpeed_crawler:
     def __init__(self, config):
         self.config = config
-        self.db = database(config)
 
     def run(self):
-        # for test
-        db = self.db
+        db = database(self.config)
+        db.fields(db.string('southbound'),
+            db.int('Northbound'),db.int('road'))
 
-        # set datafile fields
-        db.fields(db.string('Loc'), db.int('Pop'), db.int('Temp'))
-
-        # # insert value
-        db.insert(Loc = 'Taipei', Pop = 10, Temp = 8)
-        db.insert(Loc = 'Tainan', Pop = 0, Temp = 9)
+        req = requests.get('http://1968.freeway.gov.tw/traffic/index/fid/10010')
+        soup = BeautifulSoup(req.text, 'html.parser')
+        tb = soup.find(id='secs_body')
+        
+        for tr in tb.find_all('tr'):
+            tds = tr.find_all('td')
+            # insert value
+            db.insert(road=tds[1].text, Northbound=tds[2].text,
+                southbound=tds[0].text)
         
         db.close()
 
 if __name__ == '__main__':
     import config
-    c = Weather_crawler(config)
+    c = roadSpeed_crawler(config)
     c.run()
