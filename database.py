@@ -9,9 +9,18 @@ class Datafile:
         self.path = path
         self.exist = os.path.isfile(self.path)
 
+    def fields(self):
+        raise NotImplementedError
+
+    def insert(self):
+        raise NotImplementedError
+
+    def close(self):
+        raise NotImplementedError
+
     @staticmethod
     def int(name):
-        return {'field_type':'int', 'field_name': name}
+        return {'field_type': 'int', 'field_name': name}
 
     @staticmethod
     def float(name):
@@ -31,7 +40,6 @@ class Sqlite_db(Datafile):
         self.db = sqlite3.connect(path)
 
     def fields(self, *field):
-        if self.exist: return True # for temp
         tableField = []
         for f in field:
             tableField.append((f['field_name'] + ' ' + f['field_type']))
@@ -48,7 +56,7 @@ class Sqlite_db(Datafile):
                 val.append('"%s"' % str(i))
             else:
                 val.append(str(i))
-        
+
         key = '(%s)' % ','.join(key)
         val = '(%s)' % ','.join(val)
 
@@ -66,7 +74,7 @@ class Json_db(Datafile):
         # opens for writing and reading, if it does 
         # not exist then create it and open it
         self.file = open(path, 'w+')
-        self.json= {"data": []}
+        self.json = {"data": []}
 
     def fields(self, *field):
         pass
@@ -98,26 +106,3 @@ class Csv_db(Datafile):
 
     def close(self):
         self.file.close()
-
-# datafile interface factory
-def database(config):
-    # get app config setting
-    path = config.datafile_path
-
-    f_extension = os.path.splitext(path)[1]
-    print('file type:' + f_extension)
-
-    # return datafile interface object
-    if f_extension == '.json':
-        return Json_db(path)
-    elif f_extension == '.csv':
-        return Csv_db(path)
-    elif f_extension == '.db':
-        return Sqlite_db(path)
-    else:
-        return False
-
-def container(spring):
-    # inject spring into container retrun object interface
-    # use this class fields type defined datafile fields
-    pass
