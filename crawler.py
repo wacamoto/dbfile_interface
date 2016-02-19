@@ -1,13 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
-from database import database
 
 class roadSpeed_crawler:
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, db):
+        self.db = db
 
     def run(self):
-        db = database(self.config)
+        db = self.db
         db.fields(db.string('southbound'),
             db.int('Northbound'),db.int('road'))
 
@@ -22,8 +21,3 @@ class roadSpeed_crawler:
                 southbound=tds[0].text)
         
         db.close()
-
-if __name__ == '__main__':
-    import config
-    c = roadSpeed_crawler(config)
-    c.run()
