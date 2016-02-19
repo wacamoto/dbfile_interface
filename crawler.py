@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-class roadSpeed_crawler:
+class RoadSpeed_crawler:
     def __init__(self, db):
         self.db = db
 
