@@ -3,6 +3,7 @@ import csv
 import json
 import sqlite3
 
+
 class Datafile:
     # base class
     def __init__(self, path):
@@ -24,19 +25,20 @@ class Datafile:
 
     @staticmethod
     def float(name):
-        return {'field_type':'real', 'field_name': name}
+        return {'field_type': 'real', 'field_name': name}
 
     @staticmethod
     def string(name):
-        return {'field_type':'text', 'field_name': name}
+        return {'field_type': 'text', 'field_name': name}
+
 
 class Sqlite_db(Datafile):
     # sqlite datafile interface
     def __init__(self, path):
         super().__init__(path)
 
-        # if sqlite database does not exist 
-        # it will be created 
+        # if sqlite database does not exist
+        # it will be created
         self.db = sqlite3.connect(path)
 
     def fields(self, *field):
@@ -66,12 +68,13 @@ class Sqlite_db(Datafile):
     def close(self):
         self.db.close()
 
+
 class Json_db(Datafile):
     # json datafile interface
     def __init__(self, path):
         super().__init__(path)
 
-        # opens for writing and reading, if it does 
+        # opens for writing and reading, if it does
         # not exist then create it and open it
         self.file = open(path, 'w+')
         self.json = {"data": []}
@@ -86,12 +89,12 @@ class Json_db(Datafile):
         json.dump(self.json, self.file, indent=4)
         self.file.close()
 
+
 class Csv_db(Datafile):
     # csv datafile interface
     def __init__(self, path):
         super().__init__(path)
-        
-        # opens for writing and reading, if it does 
+        # opens for writing and reading, if it does
         # not exist then create it and open it
         self.file = open(path, 'w+')
 
@@ -100,7 +103,7 @@ class Csv_db(Datafile):
         self.writer = csv.DictWriter(self.file, header)
         writer = csv.writer(self.file)
         writer.writerow(header)
-        
+
     def insert(self, **value):
         self.writer.writerow(value)
 

@@ -2,10 +2,11 @@ import os
 import database
 from crawler import RoadSpeed_crawler
 
+
 def main():
     import config
     path = config.datafile_path
-    
+
     if path.endswith('json'):
         db = database.Json_db(path)
     elif path.endswith('csv'):
